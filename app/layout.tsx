@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-
+import SessionWrapper from "@/app/sessionWrapper";
 
 export const metadata: Metadata = {
   title: "Job description",
@@ -13,10 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
-    </html>
+      <SessionWrapper>
+        <html lang="en">
+          <body>
+            {children}
+          </body>
+        </html>
+      </SessionWrapper>
   );
 }

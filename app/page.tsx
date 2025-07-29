@@ -1,12 +1,15 @@
+"use client"
 import '@/app/globals.css'
-import JobCard from "@/app/pagelist/JobCard";
-import {redirect} from "next/navigation";
+import {store} from "@/app/redux/store";
+import {Provider} from "react-redux"
+import Pagelist from "@/app/pagelist/page";
 
 export default function Home() {
-  redirect("/pagelist/")
   return (
-    <>
 
-    </>
+    <Provider store={store} >
+
+        <Pagelist />
+    </Provider>
   );
 }

@@ -1,10 +1,21 @@
-import {job_postings} from "@/server/serverdata.ts";
+import {headers} from "next/headers";
 
 export default async function description({params}:{params:Promise<{id: string}>}){
 
     const {id} = await params;
-    const data = job_postings[parseInt(id)];
-    const abouts: string[] = ["posted_on","deadline","location","start_date","end_date"]
+    const header = await headers()
+    const host = header.get('host')
+
+    const fetched = await fetch(`https://akil-backend.onrender.com/opportunities/${id}`)
+
+    if(!fetched.ok){
+        return (<div className={"text-3xl m-32 font-bold text-red-300"}>Server Error Soory for Inconvience</div>)
+
+    }
+    const message = await fetched.json();
+    const data= message.data
+
+    const abouts: string[] = ["datePosted","deadline","startDate","endDate"]
     return (
         <div className="grid grid-cols-3">
             <div className="col-span-2 flex flex-col align-top m-4 justify-evenly bg-orange-200">
@@ -13,34 +24,16 @@ export default async function description({params}:{params:Promise<{id: string}>
                     <p className="mt-4 mx-4 font-bold">{data.description}</p>
                 </div>
                 <div className="p-4">
-                    <h2   className="font-bold  text-red-900 text-2xl" >Responsibilties</h2>
-                    <ul>
-                        {data.responsibilities.map((item, key) => {
-                            return (
-                                <li className="my-4" key={key}>
-                                    <img src={`/Icons/check.png`} className="w-6 h-6 mx-4 inline" alt="Icon" />
-                                    <span className="text-sm font-bold">{item}</span>
-                                </li>
-                            )
-                        })}
-                    </ul>
+                    <h2 className="font-bold  text-red-900 text-2xl">Responsibilties</h2>
+                    <p className="mt-4 mx-4 font-bold">{data.responsibilities}</p>
                 </div>
                 <div className="p-4">
-                    <h2   className="font-bold text-red-900 text-2xl">Ideal Candidate we want</h2>
-                    <ul>
-                        {data.ideal_candidate.traits.map((item, key) => {
-                            return (
-                                <li className="my-4" key={key+1}>
-                                    <img src={`/Icons/check.png`} className="w-6 h-6 mx-4 inline" alt="Icon" />
-                                    <span className="text-sm font-bold">{item}</span>
-                                </li>
-                            )
-                        })}
-                    </ul>
+                <h2 className="font-bold text-red-900 text-2xl">Ideal Candidate we want</h2>
+                    <p className="mt-4 mx-4 font-bold">{data.idealCandidate}</p>
                 </div>
                 <div>
-                    <h2   className="font-bold  text-red-900 text-2xl">When and Where</h2>
-                    <p className="font-bold text-sm">{data.when_where}</p>
+                    <h2 className="font-bold  text-red-900 text-2xl">When and Where</h2>
+                    <p className="font-bold text-sm">{data.whenAndWhere}</p>
                 </div>
             </div>
             <div className="col-span-1 flex flex-col my-8 uppercase">
@@ -56,7 +49,7 @@ export default async function description({params}:{params:Promise<{id: string}>
                                                  className="w-10 h-10 rounded-full object-cover"/>
                                             <div>
                                                 <span className="text-xs font-bold text-red-700">{topic}</span>
-                                                <span className="block font-bold">{data.about[topic]}</span>
+                                                <span className="block font-bold">{data[topic].substring(0, 10)}</span>
                                             </div>
                                         </div>
 
@@ -70,7 +63,7 @@ export default async function description({params}:{params:Promise<{id: string}>
                     <h2   className="font-bold ">Categories</h2>
                     <div className="flex flex-wrap my-6">
                         {
-                            data.about.categories.map((item, index) => (
+                            data.categories.map((item, index) => (
                                 <span key={index}
                                       className="border font-bold rounded-full px-4 py-2 mx-2 text-sm text-red-800 border-gray-200">
                                     {item}
@@ -81,7 +74,7 @@ export default async function description({params}:{params:Promise<{id: string}>
                         <h2   className="font-bold">Required Skills</h2>
                         <div className="flex flex-wrap my-6">
                             {
-                                data.about.required_skills.map((item, index) => (
+                                data.requiredSkills.map((item, index) => (
                                     <span key={index}
                                           className="border font-bold rounded-full px-4 py-2 m-2 text-sm text-red-800 border-gray-200">
                                     {item}

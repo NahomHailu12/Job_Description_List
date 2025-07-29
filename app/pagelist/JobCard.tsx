@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 
 interface prop{
@@ -6,7 +7,7 @@ interface prop{
     description: string
 }
 
-export default function JobCard({data,id}: {data: prop,id:number}) {
+export default function JobCard({data,id}: {data: prop,id:string}) {
 
     return(
         <Link href={`/dashboard/description/${id}`} >
