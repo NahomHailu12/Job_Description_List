@@ -20,7 +20,7 @@ export default function SignIn(){
     const route = useRouter()
 
     async function formSubmitHandler(data: formdata){
-        console.log(data)
+
         try {
             const response = await signIn("credentials", {
                 email: data.email,
@@ -36,7 +36,7 @@ export default function SignIn(){
             }
         }
         catch(err) {
-            console.log("eroor",err)
+
         }
     }
 

@@ -27,7 +27,7 @@ export default function SignUp() {
         
         const dataresponse = {
             ...data,
-            role: "client"
+            role: "user"
         }
         try{
             const response = await fetch('/api/signUp/', {

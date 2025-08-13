@@ -17,11 +17,5 @@ export async function POST(req: Request) {
 
     const response = await fetcheddata.json();
 
-    const user = {
-        id: response.data.id,
-        email: response.data.email,
-        name: response.data.name,
-        role: response.data.role
-    }
-    return NextResponse.json(user);
+    return NextResponse.json(response);
 }

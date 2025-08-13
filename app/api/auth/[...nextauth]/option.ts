@@ -1,6 +1,21 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import {NextAuthOptions} from "next-auth";
+import {JWT} from "next-auth/jwt";
+
+interface userType{
+        id: string,
+        accessToken: string,
+        refreshToken: string,
+        name: string,
+        email: string,
+        profilePicUrl: string,
+        role: string,
+        profileComplete: boolean,
+        profileStatus: string
+
+}
+
 
 export const option: NextAuthOptions = {
     providers: [
@@ -10,7 +25,8 @@ export const option: NextAuthOptions = {
                 profile(profile){
                     return {
                         id: profile.sub,
-                        email: profile.email
+                        email: profile.email,
+                        role: "user"
                     }
 
                 }
@@ -23,10 +39,6 @@ export const option: NextAuthOptions = {
                     password: {label: "password", type: "string"}
                 },
                 async authorize(credentials,req) {
-                    
-                    console.log("cred", credentials)
-
-
 
                     if (!credentials?.email || !credentials?.password) {
                         return null;
@@ -43,7 +55,7 @@ export const option: NextAuthOptions = {
                     if (response.status !== 200)
                         return null;
 
-                    const user = await response.json();
+                    const user: userType = await response.json();
                     return user;
                 }
                 })
@@ -52,10 +64,11 @@ export const option: NextAuthOptions = {
         async jwt({token,user}){
 
             if (user){
-                token.id = user.id;
-                token.email = user.email;
+                for (const key in user){
+                    token[key] = user[key]
+                }
             }
-
+            
             return token
         },
         async redirect({ url, baseUrl }) {
@@ -69,8 +82,9 @@ export const option: NextAuthOptions = {
         async session({token,session}){
 
             if(token){
-                session.user.id = token.id;
-                session.user.email = token.email;
+                for (const key in token){
+                    session.user[key] = token[key]
+                }
             }
             return session;
         }
